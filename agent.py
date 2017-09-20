@@ -58,10 +58,8 @@ class Agent(object):
         if not room or not pw:
             room = input('请输入房号:')
             pw = input('请输入密码:')
-
         url = 'http://studyroom.lib.sjtu.edu.cn/reserve_plus.asp?applicationid=' + str(room)
         response = self.sess.get(url=url)
-
         pat = r"<input type='hidden' value='(\d)' name='needusernum'/><input type='hidden' value='(.*?)' name='roomname'"
         regular = re.search(pat, response.content.decode())
 
@@ -85,4 +83,4 @@ class Agent(object):
 
 
 if __name__ == '__main__':
-    pass
+    print('请从main.py进入程序')

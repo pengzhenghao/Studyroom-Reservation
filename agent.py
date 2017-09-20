@@ -77,6 +77,33 @@ class Agent(object):
                 print('爆炸了')
                 return
         else:
+            print('登录失败')
+
+    def join(self, room=None, pw=None):
+        if not room or not pw:
+            room = input('请输入房号:')
+            pw = input('请输入密码:')
+
+        url = 'http://studyroom.lib.sjtu.edu.cn/reserve_plus.asp?applicationid=' + str(room)
+        response = self.sess.get(url=url)
+
+        pat = r"<input type='hidden' value='(\d)' name='needusernum'/><input type='hidden' value='(.*?)' name='roomname'"
+        regular = re.search(pat, response.content.decode())
+
+        if regular:
+            print(u'找到此房间, 即将进行申请')
+            url = 'http://studyroom.lib.sjtu.edu.cn/reserve_plus_ok.asp'
+            data = {'password': pw, 'B1': u'加入', 'applicationid': room, 'needusernum': regular.group(1),
+                    'roomname': regular.group(2)}
+            response = self.sess.post(url, data)
+            s = re.search(r"language=javascript>alert\('(.*?)'\);", response.content.decode())
+            if s:
+                print(s.group(1))
+                return
+            else:
+                print('爆炸了')
+                return
+        else:
             print(u'未找到此房间, 退出申请')
             print(response.content.decode())
             return
@@ -84,3 +111,4 @@ class Agent(object):
 
 if __name__ == '__main__':
     print('请从main.py进入程序')
+    pass
